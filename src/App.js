@@ -12,54 +12,69 @@ function App() {
   const [latestBlocks, setLatestBlocks] = useState(null);
   const [latestBlockTxns, setLatestBlockTxns] = useState(null);
 
-  useEffect(() => {
-    async function fetchLatestBlocks() {
-      try {
-        const status = await algodClient.status().do();
-        const currentRound = status["last-round"];
+  // Function to fetch the latest blocks
+  async function fetchLatestBlocks() {
+    try {
+      const status = await algodClient.status().do();
+      const currentRound = status["last-round"];
 
-        const blockPromises = [];
-        for (let i = currentRound; i > currentRound - 5; i--) {
-          blockPromises.push(algodClient.block(i).do());
-        }
-        const blockResponses = await Promise.all(blockPromises);
+      const blockPromises = [];
+      for (let i = currentRound; i > currentRound - 5; i--) {
+        blockPromises.push(algodClient.block(i).do());
+      }
+      const blockResponses = await Promise.all(blockPromises);
 
-        const blocks = blockResponses.map((blockResponse) => {
-          const round = blockResponse["block"]["rnd"];
-          const transactions = blockResponse["block"]["txns"];
-          const formattedTransactions = transactions.map((txn) => {
-            const sender = algosdk.encodeAddress(txn.txn.snd);
-            const receiver = txn.txn.rcv ? algosdk.encodeAddress(txn.txn.rcv) : "None";
-            const type = txn.txn.type === "pay" ? "pay" : "appl";
-            return `Sender: ${sender}, Receiver: ${receiver}, Type: ${type}`;
-          });
-
-          const payCount = formattedTransactions.filter((txn) => txn.includes("Type: pay")).length;
-          const applCount = formattedTransactions.filter((txn) => txn.includes("Type: appl")).length;
-
-          return {
-            round,
-            transactions: formattedTransactions,
-            payCount,
-            applCount,
-          };
+      const blocks = blockResponses.map((blockResponse) => {
+        const round = blockResponse["block"]["rnd"];
+        const transactions = blockResponse["block"]["txns"];
+        const formattedTransactions = transactions.map((txn) => {
+          const sender = algosdk.encodeAddress(txn.txn.snd);
+          const receiver = txn.txn.rcv ? algosdk.encodeAddress(txn.txn.rcv) : "None";
+          const type = txn.txn.type === "pay" ? "pay" : "appl";
+          return `Sender: ${sender}, Receiver: ${receiver}, Type: ${type}`;
         });
 
-        const latestBlockInfo = blocks.map((block) => ({
-          info: `#${block.round}\npay=${block.payCount}, appl=${block.applCount}\n${block.payCount + block.applCount} Transactions`,
-        }));
-        setLatestBlocks(latestBlockInfo);
+        const payCount = formattedTransactions.filter((txn) => txn.includes("Type: pay")).length;
+        const applCount = formattedTransactions.filter((txn) => txn.includes("Type: appl")).length;
 
-        const blockTxns = blocks.map((block) => block.transactions);
-        setLatestBlockTxns(blockTxns);
+        return {
+          round,
+          transactions: formattedTransactions,
+          payCount,
+          applCount,
+        };
+      });
 
-        console.log("Latest Block Transactions:", blockTxns);
-      } catch (err) {
-        console.error("Failed to fetch block information:", err);
+      const latestBlockInfo = blocks.map((block) => ({
+        info: `#${block.round}\npay=${block.payCount}, appl=${block.applCount}\n${block.payCount + block.applCount} Transactions`,
+      }));
+      setLatestBlocks(latestBlockInfo);
+
+      const blockTxns = blocks.map((block) => block.transactions);
+      setLatestBlockTxns(blockTxns);
+
+      console.log("Latest Block Transactions:", blockTxns);
+    } catch (err) {
+      console.error("Failed to fetch block information:", err);
+    }
+  }
+
+  useEffect(() => {
+    fetchLatestBlocks();
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "r") {
+        fetchLatestBlocks();
       }
     }
 
-    fetchLatestBlocks();
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   return (
@@ -92,14 +107,14 @@ function App() {
                   value={block.info}
                   align="center"
                   color="black"
-                  scale="0.5 0.5 0.5" // Adjust the text scale
+                  scale="0.5 0.5 0.5"
                 ></a-text>
                 <a-text
                   value={block.info}
                   align="center"
                   color="black"
                   rotation="0 180 0"
-                  scale="0.5 0.5 0.5" // Adjust the text scale
+                  scale="0.5 0.5 0.5"
                 ></a-text>
               </a-box>
 
@@ -119,7 +134,7 @@ function App() {
                       align="center"
                       color="black"
                       position="0 0 0"
-                      scale="0.3 0.3 0.3" // Adjust the text scale
+                      scale="0.3 0.3 0.3"
                     ></a-text>
                     <a-text
                       value={txn}
@@ -127,7 +142,7 @@ function App() {
                       color="black"
                       position="0 0 0"
                       rotation="0 180 0"
-                      scale="0.3 0.3 0.3" // Adjust the text scale
+                      scale="0.3 0.3 0.3"
                     ></a-text>
                   </a-box>
                 ))}
