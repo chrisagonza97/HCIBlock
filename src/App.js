@@ -9,69 +9,101 @@ const algodPort = 443;
 
 const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 
+
+
 function App() {
   const [latestBlock, setLatestBlock] = useState(null);
-  const [latestBlockTxns, setLatestBlockTxns] = useState(null);
-  // Fetch the latest block when the component mounts
-  useEffect(() => {
-    async function fetchLatestBlock() {
-      try {
-        const status = await algodClient.status().do();
-        console.log("status:")
-        console.log(status);
-        const lastRound = status["last-round"];
-        setLatestBlock(`Last Round: ${lastRound}`);
-        console.log(lastRound);
-        // Fetch block information
-        const blockInfo = await algodClient.block(lastRound).do();
-        console.log("blockInfo");
-        console.log(blockInfo);
+  const [latestBlockTxns, setLatestBlockTxns] = useState([]);
 
-        // Extract transactions from the block
-        // if there was no transactions in the latest block, then 'transactions' is undefined
-        const transactions = blockInfo.block.txns;
-        console.log("raw Transactions in the latest block:", transactions);
-        if (typeof transactions === "undefined") {
-          console.log("no transactions in this block");
-          setLatestBlock([]);
-        } else {
-          console.log("txns")
-          let txnArr = [];
-          for (let i = 0; i < transactions.length; i++) {
-            if ((transactions[i].txn.type === "pay")) {
-              txnArr.push({
-                type: transactions[i].txn.type,
-                sender: algosdk.encodeAddress(transactions[i].txn.snd),
-                receiver: algosdk.encodeAddress(transactions[i].txn.rcv),
-              });
-            }else{
-              txnArr.push({
-                type: transactions[i].txn.type,
-                sender: algosdk.encodeAddress(transactions[i].txn.snd),
-                //receiver: algosdk.encodeAddress(transactions[i].txn.rcv),
-              });
-            }
+  // Function to fetch latest block and transactions
+  const fetchLatestBlockAndTxns = async () => {
+    try {
+      const status = await algodClient.status().do();
+      const lastRound = status["last-round"];
+      setLatestBlock(`Last Round: ${lastRound}`);
+
+      const blockInfo = await algodClient.block(lastRound).do();
+      const transactions = blockInfo.block.txns;
+
+      if (typeof transactions !== "undefined") {
+        let txnArr = [];
+        for (let i = 0; i < transactions.length; i++) {
+          if (transactions[i].txn.type === "pay") {
+            txnArr.push({
+              type: transactions[i].txn.type,
+              sender: algosdk.encodeAddress(transactions[i].txn.snd),
+              receiver: algosdk.encodeAddress(transactions[i].txn.rcv),
+            });
+          } else {
+            txnArr.push({
+              type: transactions[i].txn.type,
+              sender: algosdk.encodeAddress(transactions[i].txn.snd),
+            });
           }
-          setLatestBlockTxns(txnArr);
         }
-
-        // Display transactions
-        console.log("Transactions in the latest block:", latestBlockTxns);
-      } catch (err) {
-        setLatestBlock("Failed to get node status: " + err);
+        setLatestBlockTxns(txnArr);
+      } else {
+        setLatestBlockTxns([]);
       }
+    } catch (err) {
+      console.error("Failed to get node status:", err);
     }
-    fetchLatestBlock();
-  }, []);
+  };
 
-  // Function to get the text
-  function getHello() {
-    return "Hello";
-  }
+  // Fetch the latest block and transactions when the component mounts
+  useEffect(() => {
+    fetchLatestBlockAndTxns();
+
+    // Refresh transactions every 1 seconds (adjust as needed)
+    const interval = setInterval(fetchLatestBlockAndTxns, 1000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   return (
     <div className="App">
-      <a-scene background="color: white">
+      <a-scene cursor="rayOrigin: mouse" background="color: white">
+        {/* Other A-Frame assets and elements */}
+        {/* Display transactions */}
+        {latestBlockTxns.map((txn, index) => (
+          <React.Fragment key={index}>
+          {txn.type === "pay" ? (
+            <a-box
+              width="0.5"
+              height="0.5"
+              color="#00f"
+              position={`-2 ${2 - index * 0.5} -3`}
+              //event-set__enter="_event: mouseenter; material.color: #FF0000"
+              //event-set__leave="_event: mouseleave; material.color: #AA0000"
+            ></a-box>
+          ) : txn.type === "appl" ? (
+            <a-sphere
+              radius="0.25"
+              color="#f00"
+              position={`2 ${2 - index * 0.5} -3`}
+            ></a-sphere>
+          ) : txn.type === "axfer" ? (
+            <a-cone
+              radius="0.25"
+              color="green"
+              position={`0 ${2 - index * 0.5} -10`}
+            ></a-cone>
+          ) : txn.type === "stpf" ? (
+            <a-torus
+              radius="0.25"
+              color="purple"
+              position={`5 ${2 - index * 0.5} -10`}
+            ></a-torus>
+            ) : (
+            <a-text
+              value={`Type: ${txn.type}\nSender: ${txn.sender}\nReceiver: ${txn.receiver || 'N/A'}`}
+              align="left"
+              color="black"
+              position={`-2 ${2 - index * 0.5} -3`}
+            ></a-text>
+          )}
+        </React.Fragment>
+        ))}
         <a-assets>
           {/* Define a material asset for the white cube */}
           <a-mixin
@@ -115,7 +147,8 @@ function App() {
         ></a-plane>
 
         {/* Camera and controls */}
-        <a-entity camera look-controls></a-entity>
+        <a-entity camera look-controls>
+        </a-entity>
       </a-scene>
     </div>
   );
