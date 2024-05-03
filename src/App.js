@@ -440,9 +440,9 @@ function App() {
           ) : txn.type === "appl" ? (
 
             <a-box
-            depth="0.4"
-            width="0.4"
-            height="0.4"
+            depth={blockBoxSize}
+            width={blockBoxSize}
+            height={blockBoxSize}
               color="#f00"
               position={
                 layoutOutput === 0
@@ -467,9 +467,9 @@ function App() {
           
             ) : (
               <a-box
-              depth="0.4"
-              width="0.4"
-              height="0.4"
+              depth={blockBoxSize}
+              width={blockBoxSize}
+              height={blockBoxSize}
                 color="#f00"
                 position={
                   layoutOutput === 0
