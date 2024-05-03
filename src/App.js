@@ -17,7 +17,89 @@ function App() {
   const [latestBlockTxns, setLatestBlockTxns] = useState([]);
   const [layoutOutput, setLayoutOutput] = useState(0);
   const [timeOutput, settimeOutput] = useState(1000);
+
+  const [latestBlocks, setLatestBlocks] = useState(null); // Initialize latestBlocks state
   
+  const [oldLatestBlockTxns, setOldLatestBlockTxns] = useState(null);
+  
+  /* Delete Me if it's broken**************************************************/
+  
+  // Function to fetch the latest blocks
+  async function fetchLatestBlocks() {
+    try {
+      const status = await algodClient.status().do();
+      const currentRound = status["last-round"];
+
+      const blockPromises = [];
+      for (let i = currentRound; i > currentRound - 5; i--) {
+        blockPromises.push(algodClient.block(i).do());
+      }
+      const blockResponses = await Promise.all(blockPromises);
+
+      const blocks = blockResponses.map((blockResponse) => {
+        const round = blockResponse["block"]["rnd"];
+        const transactions = blockResponse["block"]["txns"];
+        const formattedTransactions = transactions.map((txn) => {
+          const sender = algosdk.encodeAddress(txn.txn.snd);
+          const receiver = txn.txn.rcv ? algosdk.encodeAddress(txn.txn.rcv) : "None";
+          const type = txn.txn.type === "pay" ? "pay" : "appl";
+          return `Sender: ${sender}, Receiver: ${receiver}, Type: ${type}`;
+        });
+
+        const payCount = formattedTransactions.filter((txn) => txn.includes("Type: pay")).length;
+        const applCount = formattedTransactions.filter((txn) => txn.includes("Type: appl")).length;
+
+        return {
+          round,
+          transactions: formattedTransactions,
+          payCount,
+          applCount,
+        };
+      });
+
+      const latestBlockInfo = blocks.map((block) => ({
+        info: `#${block.round}\npay=${block.payCount}, appl=${block.applCount}\n${block.payCount + block.applCount} Transactions`,
+      }));
+      setLatestBlocks(latestBlockInfo);
+
+      const blockTxns = blocks.map((block) => block.transactions);
+      setOldLatestBlockTxns(blockTxns);
+
+      console.log("Latest Block Transactions:", blockTxns);
+    } catch (err) {
+      console.error("Failed to fetch block information:", err);
+    }
+  }
+
+  useEffect(() => {
+    fetchLatestBlocks();
+  }, []);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "r") {
+        fetchLatestBlocks();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+
+
+
+
+
+
+
+
+/* Delete End************************************************************/
+
+
 
   // Function to fetch latest block and transactions
   const fetchLatestBlockAndTxns = async () => {
@@ -97,6 +179,11 @@ function App() {
   function frontBackClick() {
     setLayoutOutput(2);
   }
+
+  function groundClick() {
+    setLayoutOutput(4);
+  }
+
 
   return (
     <div className="App">
@@ -265,6 +352,28 @@ function App() {
               onClick={leftRightClick}
             ></a-text>
         </a-box>
+
+        {/*Ground Block*/}
+        <a-box id="ground" 
+        color=
+        {layoutOutput === 4
+                  ? "gray"
+                  : "blue"
+        }
+        width="2"
+              height="0.5"
+              depth="2"
+        position="-2 1 -4"
+          onClick={groundClick}
+        >
+        <a-text
+              value={`View on-Ground`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={groundClick}
+            ></a-text>
+        </a-box>
         
 
 
@@ -360,6 +469,77 @@ function App() {
           )}
         </React.Fragment>
         ))}
+        {/* End ***********************/}
+
+        {/* Delete me if Broken */}
+        {layoutOutput === 4 && latestBlocks &&
+          latestBlocks.map((block, index) => (
+            <React.Fragment key={index}>
+            <a-entity key={index}>
+              <a-box
+                position={`${index * 2 - latestBlocks.length} 1 -3`}
+                scale="1 1 1"
+                width="1"
+                height="1"
+                depth="1"
+                mixin="cubeMaterial edgeMaterial"
+                wireframe="true"
+              >
+                <a-text
+                  value={block.info}
+                  align="center"
+                  color="black"
+                  scale="0.5 0.5 0.5"
+                ></a-text>
+                <a-text
+                  value={block.info}
+                  align="center"
+                  color="black"
+                  rotation="0 180 0"
+                  scale="0.5 0.5 0.5"
+                ></a-text>
+              </a-box>
+
+              {oldLatestBlockTxns &&
+                oldLatestBlockTxns[index].map((txn, txnIndex) => (
+                  <React.Fragment key={txnIndex}>
+                  <a-box
+                    key={txnIndex}
+                    position={`${index * 2 - latestBlocks.length} 1 ${
+                      -txnIndex * 2 - 5
+                    }`}
+                    scale="1 1 1"
+                    mixin="cubeMaterial edgeMaterial"
+                    wireframe="true"
+                  >
+                    <a-text
+                      value={txn}
+                      align="center"
+                      color="black"
+                      position="0 0 0"
+                      scale="0.3 0.3 0.3"
+                    ></a-text>
+                    <a-text
+                      value={txn}
+                      align="center"
+                      color="black"
+                      position="0 0 0"
+                      rotation="0 180 0"
+                      scale="0.3 0.3 0.3"
+                    ></a-text>
+                  </a-box>
+                  </React.Fragment>
+                ))}
+            </a-entity>
+            </React.Fragment>
+          ))}
+
+
+
+        {/* End DELETE me if Broken **********************/}
+
+
+
         <a-assets>
         
           <img id="groundTexture" alt="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg"/>
@@ -399,13 +579,13 @@ function App() {
         </a-box>
 
         {/* A plane as floor */}
-        {/* <a-plane
+        <a-plane
           position="0 0 -3.5"
           rotation="-90 0 0"
-          width="4"
-          height="4"
+          width="400"
+          height="400"
           color="#7BC8A4"
-        ></a-plane> */}
+        ></a-plane> 
 
         {/* Camera and controls */}
         <a-entity camera look-controls>
