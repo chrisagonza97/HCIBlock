@@ -18,6 +18,7 @@ function App() {
   const [layoutOutput, setLayoutOutput] = useState(0);
   const [timeOutput, settimeOutput] = useState(1000);
   const [refreshBlocks, setRefreshBlocks] = useState(false);
+  const [blockBoxSize, setBlockBoxSize] = useState(.6);
 
   const [latestBlocks, setLatestBlocks] = useState(null); // Initialize latestBlocks state
   
@@ -189,14 +190,37 @@ function App() {
     clickRefreshBlocks();
   }
 
+  function changeDamnBlockSize() {
+    setBlockBoxSize(1);
+  }
+
 
   return (
     <div className="App">
       <a-scene cursor="rayOrigin: mouse">
-      <a-sky src="https://cdn.aframe.io/a-painter/images/sky.jpg"></a-sky>
+      <a-assets>
+        
+        <img id="groundTexture" alt="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg"/>
+        <img id="skyTexture" alt="sky" src="https://cdn.aframe.io/a-painter/images/sky.jpg"/>
+      
+        {/* Define a material asset for the white cube */}
+        <a-mixin
+          id="cubeMaterial"
+          material="color: #ffffff; opacity: 1.0; transparent: true; metalness: 0; roughness: 0.5; shader: standard"
+        ></a-mixin>
+        {/* Define a material asset for the blue edges */}
+        <a-mixin
+          id="edgeMaterial"
+          material="color: #00f; opacity: 1; metalness: 0; roughness: 0.5; shader: standard"
+        ></a-mixin>
+      </a-assets>
+
+
+      
         {/* Other A-Frame assets and elements */}
         {/*options up-down and left right*/}
 
+        
         {/*Time block*/}
         <a-box id="time-block" color=
         {timeOutput === 600000
@@ -214,11 +238,11 @@ function App() {
             ></a-text>
         </a-box>
 
-        {/*Half Second*/}
-        <a-box id="half-second" color=
+        {/*Ten Seconds*/}
+        <a-box id="Ten-seconds" color=
         {timeOutput === 10000
                   ? "green"
-                  : "grey"
+                  : "blue"
         } position="2 .5 -4"
           onClick={setTenSecond}
           width="2"
@@ -237,7 +261,7 @@ function App() {
         <a-box id="one-second" color=
         {timeOutput === 1000
                   ? "green"
-                  : "grey"
+                  : "blue"
         } position="2 1 -4"
           onClick={setOneSecond}
           width="2"
@@ -256,7 +280,7 @@ function App() {
         <a-box id="five-second" color=
         {timeOutput === 5000
                   ? "green"
-                  : "grey"
+                  : "blue"
         } position="4 1 -4"
           onClick={setFiveSecond}
           width="2"
@@ -275,7 +299,7 @@ function App() {
           <a-box id="ten-minute" color=
           {timeOutput === 600000
                   ? "green"
-                  : "grey"
+                  : "blue"
           } position="4 .5 -4"
           onClick={setTenMinutes}
           width="2"
@@ -376,8 +400,7 @@ function App() {
             ></a-text>
         </a-box>
         
-
-
+        
         {/* Display transactions */}
         {latestBlockTxns.map((txn, index) => (
           <React.Fragment key={index}>
@@ -390,9 +413,9 @@ function App() {
             {/* Pay block */}
           {txn.type === "pay" ? (
             <a-box
-              depth="0.4"
-              width="0.4"
-              height="0.4"
+              depth={blockBoxSize}
+              width={blockBoxSize}
+              height={blockBoxSize}
               color="#00f"
               position={
                 layoutOutput === 0
@@ -408,8 +431,8 @@ function App() {
               color="white"
               position={
                 layoutOutput === 0
-                  ? `-.20 0 .20`
-                  : `-.20 0 .20`
+                  ? `-.20 0 .30`
+                  : `-.20 0 .30`
               }
             ></a-text>
             </a-box>  
@@ -479,10 +502,11 @@ function App() {
             <a-entity key={index}>
               <a-box
                 position={`${ - index * 2 - latestBlocks.length} .5 -3`}
+                color="black"
                 scale="1 1 1"
-                width="1"
-                height="1"
-                depth="1"
+                width="2"
+                height="2"
+                depth="2"
                 mixin="cubeMaterial edgeMaterial"
                 wireframe="true"
               >
@@ -490,14 +514,14 @@ function App() {
                   value={block.info}
                   align="center"
                   color="black"
-                  scale="0.5 0.5 0.5"
+                  scale="1 1 1"
                 ></a-text>
                 <a-text
                   value={block.info}
                   align="center"
                   color="black"
                   rotation="0 180 0"
-                  scale="0.5 0.5 0.5"
+                  scale="1 1 1"
                 ></a-text>
               </a-box>
 
@@ -507,7 +531,7 @@ function App() {
                   <a-box
                     key={txnIndex}
                     position={`${ - index * 2 - latestBlocks.length} .5 ${
-                      -txnIndex * 2 - 5
+                      -txnIndex * 2 - 6
                     }`}
                     scale="1 1 1"
                     mixin="cubeMaterial edgeMaterial"
@@ -539,24 +563,6 @@ function App() {
 
         {/* End DELETE me if Broken **********************/}
 
-
-
-        <a-assets>
-        
-          <img id="groundTexture" alt="ground" src="https://cdn.aframe.io/a-painter/images/floor.jpg"/>
-          <img id="skyTexture" alt="sky" src="https://cdn.aframe.io/a-painter/images/sky.jpg"/>
-        
-          {/* Define a material asset for the white cube */}
-          <a-mixin
-            id="cubeMaterial"
-            material="color: #ffffff; opacity: 1.0; transparent: true; metalness: 0; roughness: 0.5; shader: standard"
-          ></a-mixin>
-          {/* Define a material asset for the blue edges */}
-          <a-mixin
-            id="edgeMaterial"
-            material="color: #00f; opacity: 1; metalness: 0; roughness: 0.5; shader: standard"
-          ></a-mixin>
-        </a-assets>
         
         {/* Use the defined material assets for the white cube */}
         <a-box
@@ -591,6 +597,7 @@ function App() {
         {/* Camera and controls */}
         <a-entity camera look-controls>
         </a-entity>
+        <a-sky>scr="#sky"</a-sky>
       </a-scene>
     </div>
   );
