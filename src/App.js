@@ -17,6 +17,7 @@ function App() {
   const [latestBlockTxns, setLatestBlockTxns] = useState([]);
   const [layoutOutput, setLayoutOutput] = useState(0);
   const [timeOutput, settimeOutput] = useState(1000);
+  const [refreshBlocks, setRefreshBlocks] = useState(false);
 
   const [latestBlocks, setLatestBlocks] = useState(null); // Initialize latestBlocks state
   
@@ -73,7 +74,7 @@ function App() {
 
   useEffect(() => {
     fetchLatestBlocks();
-  }, []);
+  }, [refreshBlocks]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -160,6 +161,10 @@ function App() {
     
   }
 
+  function clickRefreshBlocks() {
+    setRefreshBlocks((prevState) => !prevState); // Toggle the value of refreshBlocks
+  }
+
 
   // Fetch the latest block and transactions when the component mounts
   useEffect(() => {
@@ -181,7 +186,7 @@ function App() {
   }
 
   function groundClick() {
-    setLayoutOutput(4);
+    clickRefreshBlocks();
   }
 
 
@@ -353,13 +358,9 @@ function App() {
             ></a-text>
         </a-box>
 
-        {/*Ground Block*/}
-        <a-box id="ground" 
-        color=
-        {layoutOutput === 4
-                  ? "gray"
-                  : "blue"
-        }
+        {/* Refresh Ground Block*/}
+        <a-box id="refresh-ground" 
+        color="yellow"
         width="2"
               height="0.5"
               depth="2"
@@ -367,9 +368,9 @@ function App() {
           onClick={groundClick}
         >
         <a-text
-              value={`View on-Ground`}
+              value={`Refresh on-Ground`}
               align="center"
-              color="white"
+              color="black"
               position={`0 0 1`}
               onClick={groundClick}
             ></a-text>
@@ -380,12 +381,12 @@ function App() {
         {/* Display transactions */}
         {latestBlockTxns.map((txn, index) => (
           <React.Fragment key={index}>
-            <a-text
+            {/* <a-text
               value={`Type: ${layoutOutput}`}
               align="left"
               color="black"
               position={`-2 3 -5`}
-            ></a-text>
+            ></a-text> */}
             {/* Pay block */}
           {txn.type === "pay" ? (
             <a-box
@@ -472,12 +473,12 @@ function App() {
         {/* End ***********************/}
 
         {/* Delete me if Broken */}
-        {layoutOutput === 4 && latestBlocks &&
+        {latestBlocks &&
           latestBlocks.map((block, index) => (
             <React.Fragment key={index}>
             <a-entity key={index}>
               <a-box
-                position={`${index * 2 - latestBlocks.length} 1 -3`}
+                position={`${ - index * 2 - latestBlocks.length} .5 -3`}
                 scale="1 1 1"
                 width="1"
                 height="1"
@@ -505,7 +506,7 @@ function App() {
                   <React.Fragment key={txnIndex}>
                   <a-box
                     key={txnIndex}
-                    position={`${index * 2 - latestBlocks.length} 1 ${
+                    position={`${ - index * 2 - latestBlocks.length} .5 ${
                       -txnIndex * 2 - 5
                     }`}
                     scale="1 1 1"
