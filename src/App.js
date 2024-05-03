@@ -81,39 +81,39 @@ function App() {
         {/*options up-down and left right*/}
 
         <a-text
-              value={`View up-Down`}
+              value={`View Bottom-Top`}
               align="center"
               color="white"
-              position={`0 1 -1.5`}
+              position={`0 1 -3.5`}
             ></a-text>
 
         <a-box id="up-down" color=
         {layoutOutput === 0
                   ? "gray"
                   : "blue"
-        } position="0 1 -2"
+        } position="0 1 -4"
           onClick={handleClick}
-          width="1.5"
+          width="2"
               height="0.5">
         </a-box>
 
-        <a-box id="right-left" 
+        <a-box id="left-right" 
         color=
         {layoutOutput === 1
                   ? "gray"
                   : "blue"
         }
-        width="1.5"
+        width="2"
               height="0.5"
-        position="0 .5 -2"
+        position="0 .5 -4"
           onClick={handleLeftRightClick}
         >
         </a-box>
         <a-text
-              value={`Right-Left`}
+              value={`View Left-Right`}
               align="center"
               color="white"
-              position={`0 .5 -1.5`}
+              position={`0 .5 -3.5`}
             ></a-text>
 
         {/* Display transactions */}
@@ -127,35 +127,59 @@ function App() {
             ></a-text>
           {txn.type === "pay" ? (
             <a-box
+              depth="0.4"
               width="0.4"
               height="0.4"
               color="#00f"
               position={
                 layoutOutput === 0
-                  ? `-2 ${2 - index * 0.5} -3`
-                  : `${2 - index * 0.5} -2 -3`
+                  ? `-2 ${2 + index * 0.5} -4`
+                  : `${-2 + index * 0.5} 4 -4`
               }
-              // event-set__enter="_event: mouseenter; material.color: #FF0000"
-              // event-set__leave="_event: mouseleave; material.color: #AA0000"
-            ></a-box>
+            >
+              <a-text
+              value={`Pay`}
+              align="left"
+              color="white"
+              position={
+                layoutOutput === 0
+                  ? `-.20 0 .20`
+                  : `-.20 0 .20`
+              }
+            ></a-text>
+            </a-box>  
           ) : txn.type === "appl" ? (
-            <a-sphere
-              radius="0.25"
+            <a-box
+            depth="0.4"
+            width="0.4"
+            height="0.4"
               color="#f00"
               position={
                 layoutOutput === 0
-                  ? `2 ${2 - index * 0.5} -3`
-                  : `${2 - index * 0.5} 2 -3`
+                  ? `2 ${2 + index * 0.5} -4`
+                  : `${-2 + index * 0.5} 3 -4`
               }
-            ></a-sphere>
+              
+            >
+              <a-text
+              value={`Appl`}
+              align="left"
+              color="white"
+              position={
+                layoutOutput === 0
+                  ? `-.15 0 .20`
+                  : `-.15 0 .20`
+              }
+            ></a-text>
+            </a-box>
           ) : txn.type === "axfer" ? (
             <a-cone
               radius="0.25"
               color="green"
               position={
                 layoutOutput === 0
-                  ? `0 ${2 - index * 0.5} -10`
-                  : `${2 - index * 0.5} 0 -10`
+                  ? `0 ${2 + index * 0.5} -10`
+                  : `${2 + index * 0.5} 0 -10`
               }
             ></a-cone>
           ) : txn.type === "stpf" ? (
@@ -193,21 +217,21 @@ function App() {
         
         {/* Use the defined material assets for the white cube */}
         <a-box
-          position="0 2 -3"
-          scale="1 1 1"
-          width="1"
-          height="1"
-          depth="1"
+          position="0 1.5 -4.5"
+          
+          width="3"
+          height=".5"
+          depth="3"
           mixin="cubeMaterial edgeMaterial"
-          wireframe="true"
+          
         >
           {/* Display text on the front face of the cube */}
-          <a-text value={latestBlock} align="center" color="black"></a-text>
+          <a-text value={latestBlock} align="center" color="white" position={`0 0 1.5`}></a-text>
           {/* Display text on the back face of the cube */}
           <a-text
             value={latestBlock}
             align="center"
-            color="black"
+            color="white"
             rotation="0 180 0"
           ></a-text>
         </a-box>
