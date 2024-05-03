@@ -165,13 +165,17 @@ function App() {
     setRefreshBlocks((prevState) => !prevState); // Toggle the value of refreshBlocks
   }
 
+  const intervalFunction = () => {
+    fetchLatestBlockAndTxns();
+    fetchLatestBlocks();
+  }
 
   // Fetch the latest block and transactions when the component mounts
   useEffect(() => {
     fetchLatestBlockAndTxns();
 
     // Refresh transactions every 1 seconds (adjust as needed)
-    const interval = setInterval(fetchLatestBlockAndTxns, timeOutput);
+    const interval = setInterval(intervalFunction, timeOutput);
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, [timeOutput]);
