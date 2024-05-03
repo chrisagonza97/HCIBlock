@@ -224,8 +224,8 @@ function App() {
         {/*Time block*/}
         <a-box id="time-block" color=
         {timeOutput === 600000
-                  ? "red"
-                  : "green"
+                  ? "#d62828"//red
+                  : "#2a9d8f"//green
         } position="3 1.5 -4"
           width="2"
               height="0.5"
@@ -241,8 +241,8 @@ function App() {
         {/*Ten Seconds*/}
         <a-box id="Ten-seconds" color=
         {timeOutput === 10000
-                  ? "green"
-                  : "blue"
+                  ? "#2a9d8f"//green
+                  : "#003049"//blue
         } position="2 .5 -4"
           onClick={setTenSecond}
           width="2"
@@ -260,8 +260,8 @@ function App() {
         {/*One second block*/}
         <a-box id="one-second" color=
         {timeOutput === 1000
-                  ? "green"
-                  : "blue"
+                  ? "#2a9d8f"//green
+                  : "#003049"//blue
         } position="2 1 -4"
           onClick={setOneSecond}
           width="2"
@@ -279,8 +279,8 @@ function App() {
         {/*five seconds block*/}
         <a-box id="five-second" color=
         {timeOutput === 5000
-                  ? "green"
-                  : "blue"
+                  ? "#2a9d8f"
+                  : "#003049"//blue
         } position="4 1 -4"
           onClick={setFiveSecond}
           width="2"
@@ -295,12 +295,9 @@ function App() {
             ></a-text>
           </a-box>
 
-          {/*ten Minute block*/}
-          <a-box id="ten-minute" color=
-          {timeOutput === 600000
-                  ? "green"
-                  : "blue"
-          } position="4 .5 -4"
+          {/* ten Minute block */}
+          <a-box id="ten-minute" color="#d62828"
+           position="4 .5 -4"
           onClick={setTenMinutes}
           width="2"
               height="0.5"
@@ -326,7 +323,7 @@ function App() {
         <a-box id="up-down" color=
           {layoutOutput === 0
               ? "gray"
-              : "blue"
+              : "#003049"//blue
           } position="0 1 -4"
           onClick={bottomTopClick}
           width="2"
@@ -341,7 +338,7 @@ function App() {
         color=
         {layoutOutput === 2
                   ? "gray"
-                  : "blue"
+                  : "#003049"//blue
         }
         width="2"
               height="0.5"
@@ -365,7 +362,7 @@ function App() {
         color=
         {layoutOutput === 1
                   ? "gray"
-                  : "blue"
+                  : "#003049"//blue
         }
         width="2"
               height="0.5"
@@ -384,7 +381,7 @@ function App() {
 
         {/* Refresh Ground Block*/}
         <a-box id="refresh-ground" 
-        color="yellow"
+        color="#fcbf49"
         width="2"
               height="0.5"
               depth="2"
@@ -413,16 +410,16 @@ function App() {
             {/* Pay block */}
           {txn.type === "pay" ? (
             <a-box
-              depth={blockBoxSize}
-              width={blockBoxSize}
-              height={blockBoxSize}
-              color="#00f"
+              depth="0.5"
+              width="0.5"
+              height="0.5"
+              color="#5f0f40"//purple
               position={
                 layoutOutput === 0
-                  ? `-2 ${2 + index * 0.5} -4` //bottom top
+                  ? `-.3 ${2.5 + index * 0.6} -4` //bottom top
                   : layoutOutput === 1
-                    ? `${-2 + index * 0.5} 4 -4` //left right
-                    : `-2 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
+                    ? `${-2 + index * 0.6} 2 -4` //left right
+                    : `-.5 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
               }
             >
               <a-text
@@ -431,8 +428,8 @@ function App() {
               color="white"
               position={
                 layoutOutput === 0
-                  ? `-.20 0 .30`
-                  : `-.20 0 .30`
+                  ? `-.20 0 .25`
+                  : `-.20 0 .25`
               }
             ></a-text>
             </a-box>  
@@ -440,36 +437,36 @@ function App() {
           ) : txn.type === "appl" ? (
 
             <a-box
-            depth={blockBoxSize}
-            width={blockBoxSize}
-            height={blockBoxSize}
-              color="#f00"
+            depth="0.5"
+            width="0.5"
+            height="0.5"
+              color="#dc4854"//peach
               position={
                 layoutOutput === 0
-                  ? `2 ${2 + index * 0.5} -4`   // Bottom to top
+                  ? `.3 ${2.5 + index * 0.6} -4`   // Bottom to top
                   : layoutOutput === 1
-                    ? `${-2 + index * 0.5} 3 -4`  // Left to right
-                    : `2 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
+                    ? `${-2 + index * 0.6} 2.5 -4`  // Left to right
+                    : `.5 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
               }
 
             >
               <a-text
               value={`Appl`}
-              align="left"
+              align="center"
               color="white"
               position={
                 layoutOutput === 0
-                  ? `-.15 0 .20`
-                  : `-.15 0 .20`
+                  ? `0 0 .25`
+                  : `0 0 .25`
               }
             ></a-text>
             </a-box>
           
             ) : (
               <a-box
-              depth={blockBoxSize}
-              width={blockBoxSize}
-              height={blockBoxSize}
+              depth="0.4"
+              width="0.4"
+              height="0.4"
                 color="#f00"
                 position={
                   layoutOutput === 0
@@ -564,23 +561,25 @@ function App() {
         {/* End DELETE me if Broken **********************/}
 
         
-        {/* Use the defined material assets for the white cube */}
+        {/* Last Round: */}
         <a-box
-          position="0 1.5 -4.5"
+          position="0 1.5 -4"
+          color="#eae2b7"//grey
           
           width="3"
           height=".5"
-          depth="3"
+          depth="2"
           mixin="cubeMaterial edgeMaterial"
           
         >
           {/* Display text on the front face of the cube */}
-          <a-text value={latestBlock} align="center" color="white" position={`0 0 1.5`}></a-text>
+          <a-text value={latestBlock} align="center" color="black" position={`0 0 1`}></a-text>
           {/* Display text on the back face of the cube */}
           <a-text
             value={latestBlock}
+            position="0 0 -1"
             align="center"
-            color="white"
+            color="black"
             rotation="0 180 0"
           ></a-text>
         </a-box>
@@ -591,7 +590,7 @@ function App() {
           rotation="-90 0 0"
           width="400"
           height="400"
-          color="#7BC8A4"
+          color="#588157"
         ></a-plane> 
 
         {/* Camera and controls */}
