@@ -15,7 +15,8 @@ const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 function App() {
   const [latestBlock, setLatestBlock] = useState(null);
   const [latestBlockTxns, setLatestBlockTxns] = useState([]);
-  const [layoutOutput, setLayoutOutput] = useState([0]);
+  const [layoutOutput, setLayoutOutput] = useState(0);
+  const [timeOutput, settimeOutput] = useState(1000);
   
 
   // Function to fetch latest block and transactions
@@ -58,15 +59,35 @@ function App() {
     setLayoutOutput(1); // Update layoutOutput to 1 when left-right box is clicked
   }
 
+  // Event handler function for set to one second box click
+  function setOneSecond(){
+    settimeOutput(1000); 
+  }
+
+  function setFiveSecond(){
+    settimeOutput(5000); 
+  }
+
+  function setTenSecond() {
+    settimeOutput(10000); 
+    
+  }
+
+  function setTenMinutes() {
+    settimeOutput(600000); 
+    
+  }
+
+
   // Fetch the latest block and transactions when the component mounts
   useEffect(() => {
     fetchLatestBlockAndTxns();
 
     // Refresh transactions every 1 seconds (adjust as needed)
-    const interval = setInterval(fetchLatestBlockAndTxns, 1000);
+    const interval = setInterval(fetchLatestBlockAndTxns, timeOutput);
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
+  }, [timeOutput]);
 
  
   function handleClick() {
@@ -79,14 +100,114 @@ function App() {
       <a-sky src="https://cdn.aframe.io/a-painter/images/sky.jpg"></a-sky>
         {/* Other A-Frame assets and elements */}
         {/*options up-down and left right*/}
+        {/*Time block*/}
+        <a-box id="time-block" color=
+        {timeOutput === 100000
+                  ? "red"
+                  : "green"
+        } position="3 1.5 -4"
+          width="2"
+              height="0.5"
+              depth="2">
+            <a-text
+              value={`Time: ${timeOutput} ms`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+            ></a-text>
+        </a-box>
 
+        {/*Half Second*/}
+        <a-box id="half-second" color=
+        {timeOutput === 10000
+                  ? "green"
+                  : "grey"
+        } position="2 .5 -4"
+          onClick={setTenSecond}
+          width="2"
+              height="0.5"
+              depth="2">
+            <a-text
+              value={`Ten Seconds`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={setTenSecond}
+            ></a-text>
+        </a-box>
+
+        {/*One second block*/}
+        <a-box id="one-second" color=
+        {timeOutput === 1000
+                  ? "green"
+                  : "grey"
+        } position="2 1 -4"
+          onClick={setOneSecond}
+          width="2"
+              height="0.5"
+              depth="2">
+            <a-text
+              value={`One Second`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={setOneSecond}
+            ></a-text>
+        </a-box>
+
+        {/*five seconds block*/}
+        <a-box id="five-second" color=
+        {timeOutput === 5000
+                  ? "green"
+                  : "grey"
+        } position="4 1 -4"
+          onClick={setFiveSecond}
+          width="2"
+              height="0.5"
+              depth="2">
+            <a-text
+              value={`Five Seconds`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={setFiveSecond}
+            ></a-text>
+          </a-box>
+
+          {/*ten Minute block*/}
+          <a-box id="ten-minute" color=
+          {timeOutput === 600000
+                  ? "green"
+                  : "grey"
+          } position="4 .5 -4"
+          onClick={setTenMinutes}
+          width="2"
+              height="0.5"
+              depth="2">
+            <a-text
+              value={`Ten Minutes`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={setFiveSecond}
+            ></a-text>
+        </a-box>
         <a-text
               value={`View Bottom-Top`}
               align="center"
               color="white"
-              position={`0 1 -3.5`}
+              position={`0 1 -3`}
+              onClick={handleClick}
             ></a-text>
-
+            <a-text
+              value={`View Bottom-Top`}
+              align="center"
+              color="white"
+              position={`0 1 -5`}
+              rotation="0 180 0"
+              onClick={handleLeftRightClick}
+            ></a-text>
+            
         <a-box id="up-down" color=
         {layoutOutput === 0
                   ? "gray"
@@ -94,7 +215,9 @@ function App() {
         } position="0 1 -4"
           onClick={handleClick}
           width="2"
-              height="0.5">
+              height="0.5"
+              depth="2">
+
         </a-box>
 
         <a-box id="left-right" 
@@ -105,6 +228,7 @@ function App() {
         }
         width="2"
               height="0.5"
+              depth="2"
         position="0 .5 -4"
           onClick={handleLeftRightClick}
         >
@@ -113,7 +237,16 @@ function App() {
               value={`View Left-Right`}
               align="center"
               color="white"
-              position={`0 .5 -3.5`}
+              position={`0 .5 -3`}
+              onClick={handleLeftRightClick}
+            ></a-text>
+        <a-text
+              value={`View Left-Right`}
+              align="center"
+              color="white"
+              position={`0 .5 -5`}
+              rotation="0 180 0"
+              onClick={handleLeftRightClick}
             ></a-text>
 
         {/* Display transactions */}
@@ -172,29 +305,31 @@ function App() {
               }
             ></a-text>
             </a-box>
-          ) : txn.type === "axfer" ? (
-            <a-cone
-              radius="0.25"
-              color="green"
-              position={
-                layoutOutput === 0
-                  ? `0 ${2 + index * 0.5} -10`
-                  : `${2 + index * 0.5} 0 -10`
-              }
-            ></a-cone>
-          ) : txn.type === "stpf" ? (
-            <a-torus
-              radius="0.25"
-              color="purple"
-              position={`5 ${2 - index * 0.5} -10`}
-            ></a-torus>
+          
             ) : (
-            <a-text
-              value={`Type: ${txn.type}\nSender: ${txn.sender}\nReceiver: ${txn.receiver || 'N/A'}`}
-              align="left"
-              color="black"
-              position={`-2 ${2 - index * 0.5} -3`}
-            ></a-text>
+              <a-box
+              depth="0.4"
+              width="0.4"
+              height="0.4"
+                color="#f00"
+                position={
+                  layoutOutput === 0
+                    ? `0 ${2 + index * 0.5} -4`
+                    : `${-2 + index * 0.5} 3.5 -4`
+                }
+                
+              >
+                <a-text
+                value={` ${txn.type} `}
+                align="center"
+                color="white"
+                position={
+                  layoutOutput === 0
+                    ? `-.15 0 .20`
+                    : `-.15 0 .20`
+                }
+              ></a-text>
+              </a-box>
           )}
         </React.Fragment>
         ))}
