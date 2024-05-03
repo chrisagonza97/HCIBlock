@@ -55,8 +55,8 @@ function App() {
   };
 
   // Event handler function for left-right box click
-  const handleLeftRightClick = () => {
-    setLayoutOutput(1); // Update layoutOutput to 1 when left-right box is clicked
+  function leftRightClick(){
+    setLayoutOutput(1); 
   }
 
   // Event handler function for set to one second box click
@@ -90,8 +90,12 @@ function App() {
   }, [timeOutput]);
 
  
-  function handleClick() {
+  function bottomTopClick() {
     setLayoutOutput(0);
+  }
+
+  function frontBackClick() {
+    setLayoutOutput(2);
   }
 
   return (
@@ -100,9 +104,10 @@ function App() {
       <a-sky src="https://cdn.aframe.io/a-painter/images/sky.jpg"></a-sky>
         {/* Other A-Frame assets and elements */}
         {/*options up-down and left right*/}
+
         {/*Time block*/}
         <a-box id="time-block" color=
-        {timeOutput === 100000
+        {timeOutput === 600000
                   ? "red"
                   : "green"
         } position="3 1.5 -4"
@@ -192,34 +197,54 @@ function App() {
               onClick={setFiveSecond}
             ></a-text>
         </a-box>
+
+        {/*Bottom-Top Block*/}
         <a-text
-              value={`View Bottom-Top`}
-              align="center"
-              color="white"
-              position={`0 1 -3`}
-              onClick={handleClick}
-            ></a-text>
-            <a-text
-              value={`View Bottom-Top`}
-              align="center"
-              color="white"
-              position={`0 1 -5`}
-              rotation="0 180 0"
-              onClick={handleLeftRightClick}
-            ></a-text>
-            
+          value={`View Bottom-Top`}
+          align="center"
+          color="white"
+          position={`0 1 -3`}
+          onClick={bottomTopClick}
+        ></a-text>
+
         <a-box id="up-down" color=
-        {layoutOutput === 0
-                  ? "gray"
-                  : "blue"
-        } position="0 1 -4"
-          onClick={handleClick}
+          {layoutOutput === 0
+              ? "gray"
+              : "blue"
+          } position="0 1 -4"
+          onClick={bottomTopClick}
           width="2"
-              height="0.5"
-              depth="2">
+          height="0.5"
+          depth="2">
 
         </a-box>
 
+
+        {/*front-back Block*/}
+        <a-box id="front-back" 
+        color=
+        {layoutOutput === 2
+                  ? "gray"
+                  : "blue"
+        }
+        width="2"
+              height="0.5"
+              depth="2"
+        position="-2 .5 -4"
+          onClick={frontBackClick}
+        >
+
+        <a-text
+              value={`View Front-Back`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={frontBackClick}
+            ></a-text>
+        </a-box>
+        
+
+        {/*Left-Right Block*/}
         <a-box id="left-right" 
         color=
         {layoutOutput === 1
@@ -230,24 +255,18 @@ function App() {
               height="0.5"
               depth="2"
         position="0 .5 -4"
-          onClick={handleLeftRightClick}
+          onClick={leftRightClick}
         >
+        <a-text
+              value={`View Left-Right`}
+              align="center"
+              color="white"
+              position={`0 0 1`}
+              onClick={leftRightClick}
+            ></a-text>
         </a-box>
-        <a-text
-              value={`View Left-Right`}
-              align="center"
-              color="white"
-              position={`0 .5 -3`}
-              onClick={handleLeftRightClick}
-            ></a-text>
-        <a-text
-              value={`View Left-Right`}
-              align="center"
-              color="white"
-              position={`0 .5 -5`}
-              rotation="0 180 0"
-              onClick={handleLeftRightClick}
-            ></a-text>
+        
+
 
         {/* Display transactions */}
         {latestBlockTxns.map((txn, index) => (
@@ -258,6 +277,7 @@ function App() {
               color="black"
               position={`-2 3 -5`}
             ></a-text>
+            {/* Pay block */}
           {txn.type === "pay" ? (
             <a-box
               depth="0.4"
@@ -266,8 +286,10 @@ function App() {
               color="#00f"
               position={
                 layoutOutput === 0
-                  ? `-2 ${2 + index * 0.5} -4`
-                  : `${-2 + index * 0.5} 4 -4`
+                  ? `-2 ${2 + index * 0.5} -4` //bottom top
+                  : layoutOutput === 1
+                    ? `${-2 + index * 0.5} 4 -4` //left right
+                    : `-2 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
               }
             >
               <a-text
@@ -281,7 +303,9 @@ function App() {
               }
             ></a-text>
             </a-box>  
+            
           ) : txn.type === "appl" ? (
+
             <a-box
             depth="0.4"
             width="0.4"
@@ -289,10 +313,12 @@ function App() {
               color="#f00"
               position={
                 layoutOutput === 0
-                  ? `2 ${2 + index * 0.5} -4`
-                  : `${-2 + index * 0.5} 3 -4`
+                  ? `2 ${2 + index * 0.5} -4`   // Bottom to top
+                  : layoutOutput === 1
+                    ? `${-2 + index * 0.5} 3 -4`  // Left to right
+                    : `2 ${2.5 + index * 0.5} ${-4 - index * 0.5}`   // Front to back
               }
-              
+
             >
               <a-text
               value={`Appl`}
@@ -316,6 +342,7 @@ function App() {
                   layoutOutput === 0
                     ? `0 ${2 + index * 0.5} -4`
                     : `${-2 + index * 0.5} 3.5 -4`
+                  
                 }
                 
               >
