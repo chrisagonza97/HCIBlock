@@ -201,8 +201,7 @@ function App() {
             alt="ground"
             src="https://cdn.aframe.io/a-painter/images/floor.jpg"
           />
-          <img id="sky" src="public/sky_image.jpg"
-          />
+          
 
           {/* Define a material asset for the white cube */}
           <a-mixin
@@ -214,7 +213,9 @@ function App() {
             id="edgeMaterial"
             material="color: #00f; opacity: 1; metalness: 0; roughness: 0.5; shader: standard"
           ></a-mixin>
+          {/* <img id="sky" src="public\sky_image.jpg"/> */}
         </a-assets>
+        <a-sky color="#87CEEB"></a-sky>
 
         {/* Other A-Frame assets and elements */}
         {/*options up-down and left right*/}
@@ -742,10 +743,10 @@ function App() {
           height="400"
           color="#588157"
         ></a-plane>
-        <a-sky scr="#sky"></a-sky>
+        
 
         {/* Camera and controls */}
-        {/* <a-entity camera look-controls></a-entity> */}
+        <a-entity camera look-controls></a-entity>
       </a-scene>
     </div>
   );
