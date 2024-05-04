@@ -70,7 +70,8 @@ function App() {
       }));
       setLatestBlocks(latestBlockInfo);
 
-      const blockTxns = blocks.map((block) => block.transactions);
+      const blockTxns = blocks.map((block) => block.transactions).reverse();
+      
       setOldLatestBlockTxns(blockTxns);
 
       console.log("Latest Block Transactions:", blockTxns);
