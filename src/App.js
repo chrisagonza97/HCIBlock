@@ -201,10 +201,7 @@ function App() {
             alt="ground"
             src="https://cdn.aframe.io/a-painter/images/floor.jpg"
           />
-          <img
-            id="skyTexture"
-            alt="sky"
-            src="https://cdn.aframe.io/a-painter/images/sky.jpg"
+          <img id="sky" src="public/sky_image.jpg"
           />
 
           {/* Define a material asset for the white cube */}
@@ -241,6 +238,13 @@ function App() {
             color="white"
             position={`0 0 1`}
           ></a-text>
+          <a-text
+            value={`Time: ${timeOutput} ms`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
+          ></a-text>
         </a-box>
 
         {/*Ten Seconds*/}
@@ -262,6 +266,14 @@ function App() {
             align="center"
             color="white"
             position={`0 0 1`}
+            onClick={setTenSecond}
+          ></a-text>
+          <a-text
+            value={`Ten Seconds`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
             onClick={setTenSecond}
           ></a-text>
         </a-box>
@@ -287,6 +299,14 @@ function App() {
             position={`0 0 1`}
             onClick={setOneSecond}
           ></a-text>
+          <a-text
+            value={`One Second`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
+            onClick={setOneSecond}
+          ></a-text>
         </a-box>
 
         {/*five seconds block*/}
@@ -308,6 +328,14 @@ function App() {
             position={`0 0 1`}
             onClick={setFiveSecond}
           ></a-text>
+          <a-text
+            value={`Five Seconds`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
+            onClick={setFiveSecond}
+          ></a-text>
         </a-box>
 
         {/* ten Minute block */}
@@ -327,16 +355,18 @@ function App() {
             position={`0 0 1`}
             onClick={setFiveSecond}
           ></a-text>
+          <a-text
+            value={`Ten Minutes`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
+            onClick={setFiveSecond}
+          ></a-text>
         </a-box>
 
         {/*Bottom-Top Block*/}
-        <a-text
-          value={`View Bottom-Top`}
-          align="center"
-          color="white"
-          position={`0 1 -3`}
-          onClick={bottomTopClick}
-        ></a-text>
+        
 
         <a-box
           id="up-down"
@@ -348,7 +378,23 @@ function App() {
           width="2"
           height="0.5"
           depth="2"
-        ></a-box>
+        >
+          <a-text
+          value={`View Bottom-Top`}
+          align="center"
+          color="white"
+          position={`0 0 1`}
+          onClick={bottomTopClick}
+        ></a-text>
+        <a-text
+          value={`View Bottom-Top`}
+          align="center"
+          color="white"
+          position={`0 0 -1`}
+          rotation="0 180 0"
+          onClick={bottomTopClick}
+        ></a-text>
+        </a-box>
 
         {/*front-back Block*/}
         <a-box
@@ -367,6 +413,14 @@ function App() {
             align="center"
             color="white"
             position={`0 0 1`}
+            onClick={frontBackClick}
+          ></a-text>
+          <a-text
+            value={`View Front-Back`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation={`0 180 0`}
             onClick={frontBackClick}
           ></a-text>
         </a-box>
@@ -390,6 +444,14 @@ function App() {
             position={`0 0 1`}
             onClick={leftRightClick}
           ></a-text>
+          <a-text
+            value={`View Left-Right`}
+            align="center"
+            color="white"
+            position={`0 0 -1`}
+            rotation="0 180 0"
+            onClick={leftRightClick}
+          ></a-text>
         </a-box>
 
         {/* Refresh Ground Block*/}
@@ -403,12 +465,59 @@ function App() {
           onClick={groundClick}
         >
           <a-text
-            value={`Refresh on-Ground`}
+            value={`Details`}
             align="center"
             color="black"
-            position={`0 0 1`}
+            position={`.3 0 1`}
             onClick={groundClick}
+            scale="1 1 1"
           ></a-text>
+          <a-text
+            value={`Details`}
+            align="center"
+            color="black"
+            position={`.3 0 -1`}
+            rotation="0 180 0"
+            onClick={groundClick}
+            scale="1 1 1"
+          ></a-text>
+          <a-cone
+          id="arrow-head"
+          color="#003049" //blue
+          position={`-1 0 -1`}
+          radius-bottom=".2" 
+          // radius-top="0.5"
+          width=".2"
+          height=".5"
+          rotation="90 275 0"
+
+          ></a-cone>
+          <a-cone
+           id="arrow-head"
+           color="#003049" //blue
+           position={`-1 0 1`}
+           radius-bottom=".2" 
+          // radius-top="0.5"
+           width=".2"
+           height=".5"
+           rotation="90 275 0"
+          ></a-cone>
+          <a-cylinder
+            id="arrow-end"
+            position="-.5 0 1" 
+            radius=".1" 
+            height=".5" 
+            color="#003049" //blue
+            rotation="90 90 0">
+          </a-cylinder>
+          <a-cylinder
+            id="arrow-end"
+            position="-.5 0 -1" 
+            radius=".1" 
+            height=".5" 
+            color="#003049" //blue
+            rotation="90 90 0">
+          </a-cylinder>
         </a-box>
 
         {/* Display transactions */}
@@ -437,9 +546,16 @@ function App() {
               >
                 <a-text
                   value={`Pay`}
-                  align="left"
+                  align="center"
                   color="white"
-                  position={layoutOutput === 0 ? `-.20 0 .25` : `-.20 0 .25`}
+                  position="0 0 .25"
+                ></a-text>
+                <a-text
+                  value={`Pay`}
+                  align="center"
+                  color="white"
+                  position="0 0 -.25"
+                  rotation="0 180 0"
                 ></a-text>
               </a-box>
             ) : txn.type === "appl" ? (
@@ -460,7 +576,14 @@ function App() {
                   value={`Appl`}
                   align="center"
                   color="white"
-                  position={layoutOutput === 0 ? `0 0 .25` : `0 0 .25`}
+                  position="0 0 .25"
+                ></a-text>
+                <a-text
+                  value={`Appl`}
+                  align="center"
+                  color="white"
+                  position="0 0 -.25"
+                  rotation="0 180 0"
                 ></a-text>
               </a-box>
             ) : (
@@ -482,11 +605,14 @@ function App() {
                 value={` ${txn.type} `}
                 align="center"
                 color="white"
-                position={
-                  layoutOutput === 0
-                    ? `0 0 .25`
-                    : `0 0 .25`
-                }
+                position="0 0 .25"
+              ></a-text>
+              <a-text
+                value={` ${txn.type} `}
+                align="center"
+                color="white"
+                position="0 0 -.25"
+                rotation="0 180 0"
               ></a-text>
               </a-box>
           )}
@@ -616,10 +742,10 @@ function App() {
           height="400"
           color="#588157"
         ></a-plane>
+        <a-sky scr="#sky"></a-sky>
 
         {/* Camera and controls */}
-        <a-entity camera look-controls></a-entity>
-        <img id="sky" src="HCIReact\bcview\public\sky_image.jpg" />
+        {/* <a-entity camera look-controls></a-entity> */}
       </a-scene>
     </div>
   );
