@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import algosdk from "algosdk";
+import sky from './sky_image.jpg'
 //import AFRAME from "aframe"; // Import AFRAME
 
 // Define the Algorand node connection parameters
@@ -215,7 +216,7 @@ function App() {
           ></a-mixin>
           {/* <img id="sky" src="public\sky_image.jpg"/> */}
         </a-assets>
-        <a-sky color="#87CEEB"></a-sky>
+        <a-sky src = {sky}color="#87CEEB"></a-sky>
 
         {/* Other A-Frame assets and elements */}
         {/*options up-down and left right*/}
